@@ -6,16 +6,14 @@ import {
   Body,
   HttpCode,
   HttpStatus,
-  Res,
   Put,
-  Patch,
   Delete,
-  Query,
   ParseIntPipe,
 } from '@nestjs/common';
-import { Response } from 'express';
+// import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/product.interface';
+import { ProductDTO } from './dto/product.dto';
 
 interface IUser {
   name: string;
@@ -31,26 +29,49 @@ export class ProductsController {
     return this.productsService.getAll();
   }
 
+  @Get(':id')
+  async find(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.getId(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    id: number,
+    @Body() body,
+  ) {
+    return this.productsService.update(id, body);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  createProduct(@Body() productDto: ProductDTO) {
+    this.productsService.insert(productDto);
+  }
+
   // @Get('hot')
   // getSpecialProducts(): string {
   //   return 'Te vamos a mostrar los productos más calientes!!';
   // }
 
-  @Get(':id')
-  find(@Param('id') id: number) {
-    return this.productsService.getId(id);
-  }
+  // @Get(':id')
+  // find(@Param('id') id: number) {
+  //   return this.productsService.getId(id);
+  // }
 
   // @Get(':id/:size')
   // findWithSize(@Param('id') id: number, @Param('size') size: string) {
   //   return `En esta ruta obtenemos el producto ${id}, pero en su tamaño ${size}`;
   // }
 
-  @Post()
-  @HttpCode(HttpStatus.NO_CONTENT)
-  createProduct(@Body() body) {
-    this.productsService.insert(body);
-  }
+  // @Post()
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // createProduct(@Body() body) {
+  //   this.productsService.insert(body);
+  // }
 
   // @Get('milanesa')
   // rutaQuery(@Query() milanesa: string) {
@@ -71,10 +92,10 @@ export class ProductsController {
   //   }
   // }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.productsService.update(id, body);
-  }
+  // @Put(':id')
+  // update(@Param('id') id: number, @Body() body) {
+  //   return this.productsService.update(id, body);
+  // }
 
   // @Patch(':id')
   // partialUpdate(@Param('id') id: number, @Body() body) {
