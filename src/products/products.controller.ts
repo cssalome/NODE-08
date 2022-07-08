@@ -9,16 +9,18 @@ import {
   Put,
   Delete,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 // import { Response } from 'express';
 import { ProductsService } from './products.service';
 import { Product } from './interfaces/product.interface';
 import { ProductDTO } from './dto/product.dto';
+import { ProductPatchDTO } from './dto/product-patch.dto';
 
-interface IUser {
-  name: string;
-  description: string;
-}
+// interface IUser {
+//   name: string;
+//   description: string;
+// }
 
 @Controller('products')
 export class ProductsController {
@@ -49,6 +51,14 @@ export class ProductsController {
   @Post()
   createProduct(@Body() productDto: ProductDTO) {
     this.productsService.insert(productDto);
+  }
+
+  @Patch(':id')
+  async patch(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: ProductPatchDTO,
+  ) {
+    return this.productsService.patch(id, body);
   }
 
   // @Get('hot')

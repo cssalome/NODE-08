@@ -4,6 +4,7 @@ import {
   NotFoundException,
   HttpStatus,
 } from '@nestjs/common';
+import { ProductPatchDTO } from './dto/product-patch.dto';
 import { Product } from './interfaces/product.interface';
 
 @Injectable()
@@ -67,6 +68,17 @@ export class ProductsService {
         HttpStatus.NOT_FOUND,
       );
     }
+  }
+
+  patch(id: number, body: ProductPatchDTO) {
+    let previousProduct = this.getId(id);
+    let product: Product = {
+      ...previousProduct,
+      ...body,
+    };
+    this.products = this.products.map((item: Product) => {
+      return item.id == id ? product : item;
+    });
   }
 
   private lastId(): number {
